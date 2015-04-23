@@ -71,7 +71,7 @@ void cms_config_import(char *config_file)
 
 char *cms_getenv(const char *name)
 {
-	static value_buff[BUFFER_MAX];
+	static char value_buff[BUFFER_MAX];
 
 	cms_init();
 

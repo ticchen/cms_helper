@@ -25,3 +25,5 @@ clean:
 	
 -include $(sources:.c=.d)
 
+astyle:
+	astyle -A8 --indent=tab -p *.c *.h

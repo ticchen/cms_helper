@@ -7,8 +7,12 @@
 #include "cms_helper.h"
 
 
+
 int main(int argc, char* argv[])
 {
+	//test();
+	//exit(0);
+
 	cms_init();
 	cms_config_import("test.conf");
 
@@ -52,7 +56,7 @@ int main(int argc, char* argv[])
 	assert( strlen(cms_get_str_index("array", "!@#$%", 0, ";: |")) == 0);	//support zero length token
 	assert( strcmp(cms_get_str_index("array", "", 1, ";: |"), "1") == 0);	//normal case
 	assert( strcmp(cms_get_str_index("array", "", 7, ";: |"), "seven") == 0);	//normal case
-	assert( cms_get_str_index("array", NULL, 100, ";: |") == NULL);	//over range
+	assert( strcmp(cms_get_str_index("array", "NULL_STR", 100, ";: |"),"NULL_STR") == 0);	//over range
 	assert( cms_get_str_index("array_empty", NULL, 100, ";: |") == NULL);	//empty array
 
 	int num = 0;
@@ -86,6 +90,25 @@ int main(int argc, char* argv[])
 			fprintf(stderr, "str_array[%d]=%s\n", i, str_array[i]);
 		}
 	}
+
+	char *str = cms_get_str("test_%s_%d", "0", "1", 2);
+	fprintf(stderr, "str=%s\n", str);
+	cms_set_str("test_%s_%d", "1234", "1", 2);
+
+	str = cms_get_str("test_%s_%d", "0", "1", 2);
+	fprintf(stderr, "str=%s\n", str);
+
+	cms_set_int("test_%s_%d", -1, "1", 2);
+
+	str = cms_get_str("test_%s_%d", "0", "1", 2);
+	fprintf(stderr, "str=%s\n", str);
+
+	//cms_set_str_array("test", str_array, sizeof(str_array) / sizeof(str_array[0]), ",.", NULL);
+
+
+	//cms_set_str_index("array", "xxxx", 9, ";: |");
+
+
 
 	printf("passed\n");
 
