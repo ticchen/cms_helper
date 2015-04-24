@@ -31,7 +31,7 @@ int cms_set_str(const char *format, const char *value, ...);
 
 int cms_set_int_index(const char *format, const int value, ...);
 int cms_set_uint_index(const char *format, const unsigned int value, ...);
-//int cms_set_str_index(const char *format, const char *value, unsigned int index, char *separator, ...);
+int cms_set_str_index(const char *format, const char *value, unsigned int index, char *separator, ...);
 
 int cms_set_int_array(const char *format, int array[], size_t array_size, const char *separator, const char *tail_separator, ...);
 int cms_set_uint_array(const char *format, int array[], size_t array_size, const char *separator, const char *tail_separator, ...);
