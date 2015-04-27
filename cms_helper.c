@@ -415,10 +415,11 @@ int cms_set_str(const char *format, const char *value, ...)
 
 int cms_set_str_index(const char *format, const char *value, unsigned int index, char *separator, ...)
 {
-	if ((int)index < 0){
-		fprintf(stderr, "Invalid type: expected 'unsigned int' but argument 3 is of type 'signed int'!\n");
+	if (index > BUFFER_MAX){
+		fprintf(stderr, "%s(): Invalid index value: %d\n", __FUNCTION__, index);
 		return -1;
 	}
+
 	va_list args;
 	va_start(args, separator);
 	char *value_str = cms_get_str_valist(format, "", args);

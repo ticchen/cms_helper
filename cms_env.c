@@ -6,8 +6,6 @@
 #include "cms.h"
 #include "cms_helper.h"
 
-
-
 int main(int argc, char* argv[])
 {
 	//test();
@@ -18,7 +16,6 @@ int main(int argc, char* argv[])
 
 	int int_value_err = -999;
 	unsigned int uint_value_err = 999;
-
 
 	assert( cms_get_int("int_name_nonexist", int_value_err) == int_value_err);
 	assert( cms_get_int("int_value_positive", int_value_err) == 1);
@@ -104,6 +101,8 @@ int main(int argc, char* argv[])
 	fprintf(stderr, "str=%s\n", str);
 
 	//cms_set_str_array("test", str_array, sizeof(str_array) / sizeof(str_array[0]), ",.", NULL);
+
+	assert( cms_set_str_index("array", "xxxx", -1, ";: |") == -1);
 
 	cms_set_str_index("array", "zero", 0, ";: |");
 	assert( strcmp(cms_get_str("array", ""), "zero;1:2:3;-4 -5 -6;seven|eight|nine") == 0);
