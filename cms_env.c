@@ -105,10 +105,44 @@ int main(int argc, char* argv[])
 
 	//cms_set_str_array("test", str_array, sizeof(str_array) / sizeof(str_array[0]), ",.", NULL);
 
+	cms_set_str_index("array", "zero", 0, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "zero;1:2:3;-4 -5 -6;seven|eight|nine") == 0);
 
-	//cms_set_str_index("array", "xxxx", 9, ";: |");
+	cms_set_str_index("array", "three", 3, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "zero;1:2:three;-4 -5 -6;seven|eight|nine") == 0);
 
+	cms_set_str_index("array", "9", 9, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "zero;1:2:three;-4 -5 -6;seven|eight|9") == 0);
 
+	cms_set_str_index("array", "new", 11, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "zero;1:2:three;-4 -5 -6;seven|eight|9;;new") == 0);
+
+	cms_set_str_index("array", NULL, 0, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "1:2:three;-4 -5 -6;seven|eight|9;;new") == 0);
+
+	cms_set_str_index("array", NULL, 7, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "1:2:three;-4 -5 -6;seven|9;;new") == 0);
+
+	cms_set_str_index("array", NULL, 9, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "1:2:three;-4 -5 -6;seven|9;") == 0);
+
+	cms_set_str_index("array", NULL, 11, ";: |");
+	assert( strcmp(cms_get_str("array", ""), "1:2:three;-4 -5 -6;seven|9;") == 0);
+
+	cms_set_str_index("array_empty", "xxxx", 0, ";: |");
+	assert( strcmp(cms_get_str("array_empty", ""), "xxxx") == 0);
+
+	cms_set_str("array_empty", "");
+	cms_set_str_index("array_empty", "xxxx", 3, ";: |");
+	assert( strcmp(cms_get_str("array_empty", ""), ";;;xxxx") == 0);
+
+	cms_set_str("array_empty", "");
+	cms_set_str_index("array_empty", NULL, 0, ";: |");
+	assert( strcmp(cms_get_str("array_empty", ""), "") == 0);
+
+	cms_set_str("array_empty", "");
+	cms_set_str_index("array_empty", NULL, 3, ";: |");
+	assert( strcmp(cms_get_str("array_empty", ""), "") == 0);
 
 	printf("passed\n");
 
