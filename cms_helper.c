@@ -415,7 +415,7 @@ int cms_set_str(const char *format, const char *value, ...)
 
 int cms_set_str_index(const char *format, const char *value, unsigned int index, char *separator, ...)
 {
-	if((int)index < 0){
+	if ((int)index < 0){
 		fprintf(stderr, "Invalid type: expected 'unsigned int' but argument 3 is of type 'signed int'!\n");
 		return -1;
 	}
@@ -428,24 +428,22 @@ int cms_set_str_index(const char *format, const char *value, unsigned int index,
 	int len = 0;
 	len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%s", value_str);
 
-	//fprintf(stderr, "index=%2d, ori_value_str=[%s], ", index, new_value_str);
-
 	int i = 0;
 	char *value_str_start = value_str;
 	char *token = NULL, *last_token = NULL;
 	for(i = 0, token = strsep(&value_str, separator); token != NULL; i++, token = strsep(&value_str, separator)) {
 		last_token = token;
-		if(i == index) { //found
+		if (i == index) { //found
 			char *left_tokens = value_str;
-			if(left_tokens == NULL) {
+			if (left_tokens == NULL) {
 				left_tokens = "";
 			}
 
 			len = (int)(token - value_str_start);
-			if(value == NULL) { //delete mode
-				if(value_str == NULL) {
-					if(len == 0){
-						snprintf(new_value_str, sizeof(new_value_str), "%s", value);
+			if (value == NULL) { //delete mode
+				if (value_str == NULL) {
+					if (len == 0){
+						break;	//case: cms_set_str_index("array_empty", NULL, idx, sep);
 					} else {
 						snprintf(new_value_str + len - 1, sizeof(new_value_str) - len + 1, "%s",
 							left_tokens);
@@ -460,18 +458,22 @@ int cms_set_str_index(const char *format, const char *value, unsigned int index,
 		}
 	}
 
-	if(last_token != NULL && strlen(last_token) == 0) {
+	if ((i < index) && (value == NULL)){
+		return -1;	//over-index
+	}
+
+	if (last_token != NULL && strlen(last_token) == 0) {
 		i--; //tailing zero-length token is not a real token.
 	}
 
-	if(token == NULL) { // not found in index, add more
+	if (token == NULL) { // not found in index, add more
 		// fixed: tail token must be with a separator
-		if(len > 0 && new_value_str[len - 1] != separator[0] ) {
+		if (len > 0 && new_value_str[len - 1] != separator[0] ) {
 			len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%.1s", separator);
 		}
 
 		for(; i <= index; i++) {
-			if(i == index) {
+			if (i == index) {
 				len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%s", value);
 			} else {
 				len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%.1s", separator);
@@ -479,7 +481,6 @@ int cms_set_str_index(const char *format, const char *value, unsigned int index,
 		}
 	}
 
-	fprintf(stderr, "new_value_str=[%s]\n", new_value_str);
 	int changed = 0;
 	va_start(args, separator);
 	changed = cms_set_str_valist(format, new_value_str, args);
