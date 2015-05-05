@@ -143,6 +143,18 @@ int main(int argc, char* argv[])
 	cms_set_str_index("array_empty", NULL, 3, ";: |");
 	assert( strcmp(cms_get_str("array_empty", ""), "") == 0);
 
+	cms_set_int_index("array_int", 0, 0, ";: |");
+	assert( strcmp(cms_get_str("array_int", ""), "0;1;-2 -3|4;;-6;") == 0);
+
+	cms_set_int_index("array_int", -5, 5, ";: |");
+	assert( strcmp(cms_get_str("array_int", ""), "0;1;-2 -3|4;-5;-6;") == 0);
+
+	cms_set_uint_index("array_uint", 0, 0, ";: |");
+	assert( strcmp(cms_get_str("array_uint", ""), "0;1;2 3|4;;6;") == 0);
+
+	cms_set_uint_index("array_uint", 5, 5, ";: |");
+	assert( strcmp(cms_get_str("array_uint", ""), "0;1;2 3|4;5;6;") == 0);
+
 	printf("passed\n");
 
 	return 0;
