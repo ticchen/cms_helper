@@ -8,6 +8,7 @@
  **************************************/
 long int strtol_default(const char *nptr, char **endptr, int base, long int default_value);
 unsigned long int strtoul_default(const char *nptr, char **endptr, int base, unsigned long int default_value);
+const char *format_string(const char *str, size_t str_size, const char *format, ...);
 
 /***************************************
  * cms get helper
