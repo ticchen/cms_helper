@@ -376,7 +376,45 @@ static int cms_set_str_valist(const char *format, const char *value, va_list arg
 }
 
 
-static int set_str_index(const char *format, const char *value, unsigned int index, char *separator, va_list args)
+int cms_set_int(const char *format, const int value, ...)
+{
+	int changed = 0;
+	char value_str[BUFFER_MAX] = {0};
+
+	va_list args;
+	va_start(args, value);
+	changed = cms_set_str_valist(format, format_string(value_str, sizeof(value_str), "%d", value), args);
+	va_end(args);
+	return changed;
+}
+
+
+int cms_set_uint(const char *format, const unsigned int value, ...)
+{
+	int changed = 0;
+	char value_str[BUFFER_MAX] = {0};
+
+	va_list args;
+	va_start(args, value);
+	changed = cms_set_str_valist(format, format_string(value_str, sizeof(value_str), "%u", value), args);
+	va_end(args);
+	return changed;
+}
+
+
+int cms_set_str(const char *format, const char *value, ...)
+{
+	int changed = 0;
+
+	va_list args;
+	va_start(args, value);
+	changed = cms_set_str_valist(format, value, args);
+	va_end(args);
+	return changed;
+}
+
+
+static int cms_set_str_index_valist(const char *format, const char *value, unsigned int index, char *separator, va_list args)
 {
 	if (index > BUFFER_MAX){
 		fprintf(stderr, "%s(): Invalid index value: %d\n", __FUNCTION__, index);
@@ -446,48 +484,12 @@ static int set_str_index(const char *format, const char *value, unsigned int ind
 	return changed;
 }
 
-int cms_set_int(const char *format, const int value, ...)
-{
-	int changed = 0;
-	char value_str[BUFFER_MAX] = {0};
-
-	va_list args;
-	va_start(args, value);
-	changed = cms_set_str_valist(format, format_string(value_str, sizeof(value_str), "%d", value), args);
-	va_end(args);
-	return changed;
-}
-
-
-int cms_set_uint(const char *format, const unsigned int value, ...)
-{
-	int changed = 0;
-	char value_str[BUFFER_MAX] = {0};
-
-	va_list args;
-	va_start(args, value);
-	changed = cms_set_str_valist(format, format_string(value_str, sizeof(value_str), "%u", value), args);
-	va_end(args);
-	return changed;
-}
-
-
-int cms_set_str(const char *format, const char *value, ...)
-{
-	int changed = 0;
-
-	va_list args;
-	va_start(args, value);
-	changed = cms_set_str_valist(format, value, args);
-	va_end(args);
-	return changed;
-}
 
 int cms_set_str_index(const char *format, const char *value, unsigned int index, char *separator, ...)
 {
 	va_list args;
 	va_start(args, separator);
-	int changed = set_str_index(format, value, index, separator, args);
+	int changed = cms_set_str_index_valist(format, value, index, separator, args);
 	va_end(args);
 
 	return changed;
@@ -499,7 +501,7 @@ int cms_set_int_index(const char *format, const int value, unsigned int index, c
 
 	va_list args;
 	va_start(args, separator);
-	int changed = set_str_index(format, format_string(value_str, sizeof(value_str), "%d", value), index, separator, args);
+	int changed = cms_set_str_index_valist(format, format_string(value_str, sizeof(value_str), "%d", value), index, separator, args);
 	va_end(args);
 
 	return changed;
@@ -511,7 +513,7 @@ int cms_set_uint_index(const char *format, const unsigned int value, unsigned in
 
 	va_list args;
 	va_start(args, separator);
-	int changed = set_str_index(format, format_string(value_str, sizeof(value_str), "%u", value), index, separator, args);
+	int changed = cms_set_str_index_valist(format, format_string(value_str, sizeof(value_str), "%u", value), index, separator, args);
 	va_end(args);
 
 	return changed;
