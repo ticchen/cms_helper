@@ -44,8 +44,8 @@ long int strtol_default(const char *nptr, char **endptr, int base, long int defa
 	errno = 0;
 	char *next = NULL;
 	long int value = strtol(nptr, &next, base);
-	if ((errno == ERANGE && (value == LONG_MIN || value == LONG_MAX))	//range error
-	    || (errno != 0 && value == 0)) {	//format error
+	if((errno == ERANGE && (value == LONG_MIN || value == LONG_MAX))	//range error
+	   || (errno != 0 && value == 0)) {	//format error
 		value = default_value;
 	}
 
@@ -71,7 +71,7 @@ unsigned long int strtoul_default(const char *nptr, char **endptr, int base, uns
 	char *neg_sign = strchr(nptr, '-');
 	if(neg_sign) {
 		//found a negative sign
-		if( (unsigned long int)(neg_sign - nptr) + 1 == strcspn(nptr, "1234567890") ) {
+		if((unsigned long int)(neg_sign - nptr) + 1 == strcspn(nptr, "1234567890")) {
 			//the negative sign is at the beginning of digital. // ex: "   -1234"
 			return default_value;
 		}
@@ -80,8 +80,8 @@ unsigned long int strtoul_default(const char *nptr, char **endptr, int base, uns
 	errno = 0;
 	char *next = NULL;
 	unsigned long int value = strtoul(nptr, &next, base);
-	if ((errno == ERANGE && value == ULONG_MAX ) //range error
-	    || (errno != 0 && value == 0 )) {	//format error
+	if((errno == ERANGE && value == ULONG_MAX)   //range error
+	   || (errno != 0 && value == 0)) {	//format error
 		value = default_value;
 	}
 
@@ -204,7 +204,7 @@ int cms_get_int_index(const char *format, int default_value, unsigned int index,
 	char *value_str = cms_get_str_index_valist(format, NULL, index, separator, args);
 	va_end(args);
 
-	if(value_str == NULL){
+	if(value_str == NULL) {
 		return default_value;
 	}
 
@@ -224,7 +224,7 @@ unsigned int cms_get_uint_index(const char *format, unsigned int default_value, 
 	char *value_str = cms_get_str_index_valist(format, NULL, index, separator, args);
 	va_end(args);
 
-	if(value_str == NULL){
+	if(value_str == NULL) {
 		return default_value;
 	}
 
@@ -263,7 +263,7 @@ int cms_get_int_array(const char *format, int default_value, int array[], size_t
 		is_array_exist = 1;
 	}
 
-	if( value_str != NULL) {
+	if(value_str != NULL) {
 		char *token = NULL , *last_token = NULL;
 		for(token_num = 0, token = strsep(&value_str, separator); token != NULL; token_num++, token = strsep(&value_str, separator)) {
 			last_token = token;
@@ -302,7 +302,7 @@ int cms_get_uint_array(const char *format, unsigned int default_value, int array
 		is_array_exist = 1;
 	}
 
-	if( value_str != NULL) {
+	if(value_str != NULL) {
 		char *token = NULL , *last_token = NULL;
 		for(token_num = 0, token = strsep(&value_str, separator); token != NULL; token_num++, token = strsep(&value_str, separator)) {
 			last_token = token;
@@ -337,11 +337,11 @@ int cms_get_str_array(const char *format, char *default_value, const char *array
 	va_end(args);
 
 	int is_array_exist = 0;
-	if(array != NULL && array_size != 0 && get_buffer != NULL && get_buffer_size != 0 ) {
+	if(array != NULL && array_size != 0 && get_buffer != NULL && get_buffer_size != 0) {
 		is_array_exist = 1;
 	}
 
-	if( value_str != NULL) {
+	if(value_str != NULL) {
 		if(get_buffer != NULL && get_buffer_size != 0) {
 			snprintf(get_buffer, get_buffer_size , "%s", value_str);
 		} else {
@@ -383,7 +383,7 @@ static int cms_set_str_valist(const char *format, const char *value, va_list arg
 	}
 
 	char name[MaxStringLen] = {0};
-	return CMSSetValue( (char *)format_string_valist(name, sizeof(name), format, args), (char *)value, SetValueUser);
+	return CMSSetValue((char *)format_string_valist(name, sizeof(name), format, args), (char *)value, SetValueUser);
 }
 
 
@@ -427,7 +427,7 @@ int cms_set_str(const char *format, const char *value, ...)
 
 static int cms_set_str_index_valist(const char *format, const char *value, unsigned int index, char *separator, va_list args)
 {
-	if (index > BUFFER_MAX){
+	if(index > BUFFER_MAX) {
 		fprintf(stderr, "%s(): Invalid index value: %d\n", __FUNCTION__, index);
 		return -1;
 	}
@@ -442,45 +442,45 @@ static int cms_set_str_index_valist(const char *format, const char *value, unsig
 	char *token = NULL, *last_token = NULL;
 	for(i = 0, token = strsep(&value_str, separator); token != NULL; i++, token = strsep(&value_str, separator)) {
 		last_token = token;
-		if (i == index) { //found
+		if(i == index) {  //found
 			char *left_tokens = value_str ? value_str : "";
 
 			len = (int)(token - value_str_start);
-			if (value == NULL) { //delete mode
-				if (value_str == NULL) {
-					if (len == 0) {
+			if(value == NULL) {  //delete mode
+				if(value_str == NULL) {
+					if(len == 0) {
 						break;	//case: cms_set_str_index("array_empty", NULL, idx, sep);
 					} else {
 						snprintf(new_value_str + len - 1, sizeof(new_value_str) - len + 1, "%s",
-							left_tokens);
+						         left_tokens);
 					}
 				} else {
 					snprintf(new_value_str + len, sizeof(new_value_str) - len, "%s", left_tokens);
 				}
 			} else { //update mode
 				snprintf(new_value_str + len, sizeof(new_value_str) - len, "%s%.1s%s",
-					value, value_str ? separator : "", left_tokens);
+				         value, value_str ? separator : "", left_tokens);
 			}
 			break;
 		}
 	}
 
-	if ((i < index) && (value == NULL)){
+	if((i < index) && (value == NULL)) {
 		return -1;	//adding NULL value(over-index), skip
 	}
 
-	if (last_token != NULL && strlen(last_token) == 0) {
+	if(last_token != NULL && strlen(last_token) == 0) {
 		i--; //tailing zero-length token is not a real token.
 	}
 
-	if (token == NULL) { // not found in index, add more
+	if(token == NULL) {  // not found in index, add more
 		// fixed: tail token must be with a separator
-		if (len > 0 && new_value_str[len - 1] != separator[0] ) {
+		if(len > 0 && new_value_str[len - 1] != separator[0]) {
 			len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%.1s", separator);
 		}
 
 		for(; i <= index; i++) {
-			if (i == index) {
+			if(i == index) {
 				len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%s", value);
 			} else {
 				len += snprintf(new_value_str + len, sizeof(new_value_str) - len, "%.1s", separator);
@@ -542,10 +542,10 @@ int cms_set_int_array(const char *format, int array[], size_t array_size, const 
 	int  value_str_len = 0;
 	int i = 0;
 	for(i = 0; i < array_size; i++) {
-		value_str_len += snprintf( value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s%d", sep[!!i] , array[i] );
+		value_str_len += snprintf(value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s%d", sep[!!i] , array[i]);
 	}
 	if(tail_separator) {
-		value_str_len += snprintf( value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s", tail_separator );
+		value_str_len += snprintf(value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s", tail_separator);
 	}
 
 	int changed = 0;
@@ -569,10 +569,10 @@ int cms_set_uint_array(const char *format, int array[], size_t array_size, const
 	int  value_str_len = 0;
 	int i = 0;
 	for(i = 0; i < array_size; i++) {
-		value_str_len += snprintf( value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s%u", sep[!!i] , array[i] );
+		value_str_len += snprintf(value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s%u", sep[!!i] , array[i]);
 	}
 	if(tail_separator) {
-		value_str_len += snprintf( value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s", tail_separator );
+		value_str_len += snprintf(value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s", tail_separator);
 	}
 
 	int changed = 0;
@@ -600,10 +600,10 @@ int cms_set_str_array(const char *format, const char *array[], size_t array_size
 		if(token == NULL) {
 			token = "";
 		}
-		value_str_len += snprintf( value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s%s", sep[!!i] , token );
+		value_str_len += snprintf(value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s%s", sep[!!i] , token);
 	}
 	if(tail_separator) {
-		value_str_len += snprintf( value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s", tail_separator );
+		value_str_len += snprintf(value_str + value_str_len, sizeof(value_str) - value_str_len, "%.1s", tail_separator);
 	}
 
 	int changed = 0;

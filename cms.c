@@ -15,7 +15,7 @@ void env_dump()
 		return;
 	}
 
-	while( environ[i] != NULL ) {
+	while(environ[i] != NULL) {
 		printf("%s\r\n", environ[i]);
 		i++;
 	}
@@ -52,7 +52,7 @@ void cms_config_import(char *config_file)
 	char buff[80] = {0};
 	char *next = NULL;
 	char *start = NULL;
-	while( (start = fgets(buff, sizeof(buff), fp)) != NULL) {
+	while((start = fgets(buff, sizeof(buff), fp)) != NULL) {
 		if(start[0] == '#') {
 			continue;
 		}
@@ -75,7 +75,7 @@ char *cms_getenv(const char *name)
 
 	cms_init();
 
-	if( name == NULL ) {
+	if(name == NULL) {
 		return NULL;
 	}
 
@@ -97,13 +97,13 @@ int cms_setenv(const char *name, const char *value)
 {
 	cms_init();
 
-	if( name == NULL || value == NULL) {
+	if(name == NULL || value == NULL) {
 		return -1;
 	}
 
 	char *origin_value = getenv(name);
 	int ret = 0;
-	if( origin_value && strcmp(origin_value, value) == 0 ) {
+	if(origin_value && strcmp(origin_value, value) == 0) {
 		ret = 0; //value not change
 	} else {
 		ret = 1; //value changed
