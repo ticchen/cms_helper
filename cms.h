@@ -12,5 +12,7 @@ char *cms_getenv(const char *name);
 int cms_setenv(const char *name, const char *value);
 
 
+#define SetValueUser 2
+#define ReplaceValueUser 17
 
 #endif //_CMS_H
