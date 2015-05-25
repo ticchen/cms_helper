@@ -26,4 +26,4 @@ clean:
 -include $(sources:.c=.d)
 
 astyle:
-	astyle -A8 --indent=tab -p *.c *.h
+	astyle  --style=linux --indent=tab --pad-oper --unpad-paren -p *.c *.h
