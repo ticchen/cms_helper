@@ -372,7 +372,7 @@ int cms_get_str_array(const char *format, char *default_value, const char *array
 /***************************************
  * cms set helper
  **************************************/
-static int cms_set_str_valist(const char *format, const char *value, va_list args)
+static int cms_vset_str_valist(int vset_type, const char *format, const char *value, va_list args)
 {
 	if(format == NULL) {
 		return 0;
@@ -383,49 +383,49 @@ static int cms_set_str_valist(const char *format, const char *value, va_list arg
 	}
 
 	char name[MaxStringLen] = {0};
-	return CMSSetValue((char *)format_string_valist(name, sizeof(name), format, args), (char *)value, SetValueUser);
+	return CMSSetValue((char *)format_string_valist(name, sizeof(name), format, args), (char *)value, vset_type);
 }
 
 
-int cms_set_int(const char *format, const int value, ...)
+int cms_vset_int(int vset_type, const char *format, const int value, ...)
 {
 	int changed = 0;
 	char value_str[BUFFER_MAX] = {0};
 
 	va_list args;
 	va_start(args, value);
-	changed = cms_set_str_valist(format, format_string(value_str, sizeof(value_str), "%d", value), args);
+	changed = cms_vset_str_valist(vset_type, format, format_string(value_str, sizeof(value_str), "%d", value), args);
 	va_end(args);
 	return changed;
 }
 
 
-int cms_set_uint(const char *format, const unsigned int value, ...)
+int cms_vset_uint(int vset_type, const char *format, const unsigned int value, ...)
 {
 	int changed = 0;
 	char value_str[BUFFER_MAX] = {0};
 
 	va_list args;
 	va_start(args, value);
-	changed = cms_set_str_valist(format, format_string(value_str, sizeof(value_str), "%u", value), args);
+	changed = cms_vset_str_valist(vset_type, format, format_string(value_str, sizeof(value_str), "%u", value), args);
 	va_end(args);
 	return changed;
 }
 
 
-int cms_set_str(const char *format, const char *value, ...)
+int cms_vset_str(int vset_type, const char *format, const char *value, ...)
 {
 	int changed = 0;
 
 	va_list args;
 	va_start(args, value);
-	changed = cms_set_str_valist(format, value, args);
+	changed = cms_vset_str_valist(vset_type, format, value, args);
 	va_end(args);
 	return changed;
 }
 
 
-static int cms_set_str_index_valist(const char *format, const char *value, unsigned int index, char *separator, va_list args)
+static int cms_vset_str_index_valist(int vset_type, const char *format, const char *value, unsigned int index, char *separator, va_list args)
 {
 	if(index > BUFFER_MAX) {
 		fprintf(stderr, "%s(): Invalid index value: %d\n", __FUNCTION__, index);
@@ -491,46 +491,46 @@ static int cms_set_str_index_valist(const char *format, const char *value, unsig
 	//fprintf(stderr, "%s(): set %s as \"%s\"\n", __FUNCTION__, format, new_value_str);
 
 	int changed = 0;
-	changed = cms_set_str_valist(format, new_value_str, args);
+	changed = cms_vset_str_valist(vset_type, format, new_value_str, args);
 	return changed;
 }
 
 
-int cms_set_str_index(const char *format, const char *value, unsigned int index, char *separator, ...)
+int cms_vset_str_index(int vset_type, const char *format, const char *value, unsigned int index, char *separator, ...)
 {
 	va_list args;
 	va_start(args, separator);
-	int changed = cms_set_str_index_valist(format, value, index, separator, args);
+	int changed = cms_vset_str_index_valist(vset_type, format, value, index, separator, args);
 	va_end(args);
 
 	return changed;
 }
 
-int cms_set_int_index(const char *format, const int value, unsigned int index, char *separator, ...)
-{
-	char value_str[BUFFER_MAX] = {0};
-
-	va_list args;
-	va_start(args, separator);
-	int changed = cms_set_str_index_valist(format, format_string(value_str, sizeof(value_str), "%d", value), index, separator, args);
-	va_end(args);
-
-	return changed;
-}
-
-int cms_set_uint_index(const char *format, const unsigned int value, unsigned int index, char *separator, ...)
+int cms_vset_int_index(int vset_type, const char *format, const int value, unsigned int index, char *separator, ...)
 {
 	char value_str[BUFFER_MAX] = {0};
 
 	va_list args;
 	va_start(args, separator);
-	int changed = cms_set_str_index_valist(format, format_string(value_str, sizeof(value_str), "%u", value), index, separator, args);
+	int changed = cms_vset_str_index_valist(vset_type, format, format_string(value_str, sizeof(value_str), "%d", value), index, separator, args);
 	va_end(args);
 
 	return changed;
 }
 
-int cms_set_int_array(const char *format, int array[], size_t array_size, const char *separator, const char *tail_separator, ...)
+int cms_vset_uint_index(int vset_type, const char *format, const unsigned int value, unsigned int index, char *separator, ...)
+{
+	char value_str[BUFFER_MAX] = {0};
+
+	va_list args;
+	va_start(args, separator);
+	int changed = cms_vset_str_index_valist(vset_type, format, format_string(value_str, sizeof(value_str), "%u", value), index, separator, args);
+	va_end(args);
+
+	return changed;
+}
+
+int cms_vset_int_array(int vset_type, const char *format, int array[], size_t array_size, const char *separator, const char *tail_separator, ...)
 {
 	if(array == NULL || array_size == 0 || separator == NULL) {
 		return 0;	//nothing to set and no changed
@@ -551,13 +551,13 @@ int cms_set_int_array(const char *format, int array[], size_t array_size, const 
 	int changed = 0;
 	va_list args;
 	va_start(args, tail_separator);
-	changed = cms_set_str_valist(format, value_str, args);
+	changed = cms_vset_str_valist(vset_type, format, value_str, args);
 	va_end(args);
 	return changed;
 }
 
 
-int cms_set_uint_array(const char *format, int array[], size_t array_size, const char *separator, const char *tail_separator, ...)
+int cms_vset_uint_array(int vset_type, const char *format, int array[], size_t array_size, const char *separator, const char *tail_separator, ...)
 {
 	if(array == NULL || array_size == 0 || separator == NULL) {
 		return 0;	//nothing to set and no changed
@@ -578,13 +578,13 @@ int cms_set_uint_array(const char *format, int array[], size_t array_size, const
 	int changed = 0;
 	va_list args;
 	va_start(args, tail_separator);
-	changed = cms_set_str_valist(format, value_str, args);
+	changed = cms_vset_str_valist(vset_type, format, value_str, args);
 	va_end(args);
 	return changed;
 }
 
 
-int cms_set_str_array(const char *format, const char *array[], size_t array_size, const char *separator, const char *tail_separator, ...)
+int cms_vset_str_array(int vset_type, const char *format, const char *array[], size_t array_size, const char *separator, const char *tail_separator, ...)
 {
 	if(array == NULL || array_size == 0 || separator == NULL) {
 		return 0;	//nothing to set and no changed
@@ -609,7 +609,7 @@ int cms_set_str_array(const char *format, const char *array[], size_t array_size
 	int changed = 0;
 	va_list args;
 	va_start(args, tail_separator);
-	changed = cms_set_str_valist(format, value_str, args);
+	changed = cms_vset_str_valist(vset_type, format, value_str, args);
 	va_end(args);
 	return changed;
 }
