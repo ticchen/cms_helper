@@ -287,7 +287,7 @@ int cms_get_int_array(const char *format, int default_value, int array[], size_t
 }
 
 
-int cms_get_uint_array(const char *format, unsigned int default_value, int array[], size_t array_size, char *separator, ...)
+int cms_get_uint_array(const char *format, unsigned int default_value, unsigned int array[], size_t array_size, char *separator, ...)
 {
 	int i = 0;
 	int token_num = 0;

@@ -21,7 +21,7 @@ unsigned int cms_get_uint_index(const char *format, unsigned int default_value, 
 char *cms_get_str_index(const char *format, char *default_value, unsigned int index, char *separator, ...);
 
 int cms_get_int_array(const char *format, int default_value, int array[], size_t array_size, char *separator, ...);
-int cms_get_uint_array(const char *format, unsigned int default_value, int array[], size_t array_size, char *separator, ...);
+int cms_get_uint_array(const char *format, unsigned int default_value, unsigned int array[], size_t array_size, char *separator, ...);
 int cms_get_str_array(const char *format, char *default_value, const char *array[], size_t array_size, char *get_buffer, size_t get_buffer_size, char *separator, ...);
 
 /***************************************
