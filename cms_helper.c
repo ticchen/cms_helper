@@ -42,16 +42,22 @@ long int strtol_default(const char *nptr, char **endptr, int base, long int defa
 	}
 
 	errno = 0;
-	long int value = strtol(nptr, endptr, base);
+	char *next = NULL;
+	long int value = strtol(nptr, &next, base);
 	if ((errno == ERANGE && (value == LONG_MIN || value == LONG_MAX))	//range error
 	    || (errno != 0 && value == 0)) {	//format error
-		return default_value;
+		value = default_value;
 	}
 
-	if (*endptr == nptr) {
+	if(next == nptr) {
 		//fprintf(stderr, "No digits were found\n");
-		return default_value;
+		value = default_value;
 	}
+
+	if(endptr != NULL) {
+		*endptr = next;
+	}
+
 	return value;
 }
 
@@ -62,7 +68,6 @@ unsigned long int strtoul_default(const char *nptr, char **endptr, int base, uns
 		return default_value;
 	}
 
-	errno = 0;
 	char *neg_sign = strchr(nptr, '-');
 	if(neg_sign) {
 		//found a negative sign
@@ -72,15 +77,21 @@ unsigned long int strtoul_default(const char *nptr, char **endptr, int base, uns
 		}
 	}
 
-	unsigned long int value = strtoul(nptr, endptr, base);
+	errno = 0;
+	char *next = NULL;
+	unsigned long int value = strtoul(nptr, &next, base);
 	if ((errno == ERANGE && value == ULONG_MAX ) //range error
 	    || (errno != 0 && value == 0 )) {	//format error
-		return default_value;
+		value = default_value;
 	}
 
-	if (*endptr == nptr) {
+	if(next == nptr) {
 		//fprintf(stderr, "No digits were found\n");
-		return default_value;
+		value = default_value;
+	}
+
+	if(endptr != NULL) {
+		*endptr = next;
 	}
 
 	return value;
